@@ -85,3 +85,31 @@ chisq.test(table(df_c1$Categoria..Experient.ou.Student.,df_c1$Analgesia)) # p-va
 fisher.test(table(df_c1$Categoria..Experient.ou.Student.,df_c1$Analgesia)) # p-value = 0.001101
 
 
+# Graph - scores using UPAPS ####
+
+dfw$Timepoint <- factor(dfw$Timepoint, 
+                        levels = c("0", "1"), 
+                        labels = c("Antes da castração", "Depois da castração"))
+
+dfw$Categoria..Experient.ou.Student. <- factor(dfw$Categoria..Experient.ou.Student., 
+                                               levels = c("Experient", "Student"), 
+                                               labels = c("Experientes", "Alunos"))
+
+
+png("Boxplot_pontuações.png",width=12,height=5,units='in',res=400, 
+    family="sans")
+ggplot(dfw,aes(y=UPAPS,x=Categoria..Experient.ou.Student.,fill=Categoria..Experient.ou.Student.))+
+  geom_boxplot(position=position_dodge(.1),outlier.shape = NA)+
+  stat_summary(fun=mean,geom="point",size=5,shape=23,color="black",fill = rgb(0, 0, 0, alpha = 0.3),position=position_dodge(0.1))+
+  facet_wrap(~ Timepoint) +
+  labs(title = "Pontuação da dor em porcos antes e após castração",
+       x = "Avaliadores",
+       y = "Pontuação da UPAPS")+
+  scale_y_continuous(n.breaks=14, limits = c(-0.1, 15))+
+  scale_fill_viridis_d()+
+  theme_minimal()+theme(axis.text=element_text(size=10),
+                        axis.title=element_text(size=12,face="bold"),
+                        strip.text = element_text(size = 10,face="bold"),
+                        plot.margin = unit(c(.3,.3,.3,.3),"cm"),
+                        legend.position = 'none')
+dev.off()
