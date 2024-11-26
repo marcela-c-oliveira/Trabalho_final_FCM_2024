@@ -101,7 +101,8 @@ png("Boxplot_pontua??es.png",width=12,height=5,units='in',res=400,
     family="sans")
 ggplot(dfw,aes(y=UPAPS,x=Categoria..Experient.ou.Student.,fill=Categoria..Experient.ou.Student.))+
   geom_boxplot(position=position_dodge(.1),outlier.shape = NA)+
-  stat_summary(fun=mean,geom="point",size=5,shape=23,color="red",fill = rgb(0, 0, 0, alpha = 0.3),position=position_dodge(0.1))+
+  stat_summary(fun=mean,geom="point",size=5,shape=23,color="black",fill = rgb(0, 0, 0, alpha = 0.3),position=position_dodge(0.1))+
+  geom_hline(yintercept=4, color="gray30", linewidth=0.8)+
   facet_wrap(~ Timepoint) +
   labs(title = "Pontua??o da dor em porcos antes e ap?s castra??o",
        x = "Avaliadores",
