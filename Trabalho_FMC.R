@@ -53,6 +53,7 @@ View(dfw)
 str(dfw)
 
 df_c1=filter(dfw,Timepoint=='1')
+df_c0=filter(dfw,Timepoint=='0')
 
 
 # Matrix with expected values ####
@@ -113,3 +114,32 @@ ggplot(dfw,aes(y=UPAPS,x=Categoria..Experient.ou.Student.,fill=Categoria..Experi
                         plot.margin = unit(c(.3,.3,.3,.3),"cm"),
                         legend.position = 'none')
 dev.off()
+
+
+# Graph - proportions of analgesic indication ####
+
+tabela <- table(dfw$Categoria..Experient.ou.Student.,dfw$Analgesia)
+tabela_0 <- table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)
+tabela_1 <- table(df_c1$Categoria..Experient.ou.Student.,df_c1$Analgesia)
+
+prop <- data.frame(
+  Timepoint = c("Antes da castração", "Antes da castração", "Depois da castração", "Depois da castração"),
+  Categoria = c("Experientes", "Alunos", "Experientes", "Alunos"),
+  Analgesia = c(0, 33, 82.5, 53)
+)
+
+png("Proporções.png",width=12,height=5,units='in',res=400, 
+    family="sans")
+ggplot(data = prop, aes(x = factor(Categoria), y = Analgesia, fill = Categoria)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ Timepoint) +
+  labs(
+    title = "Indicação analgésica em porcos antes e após castração",
+    x = "Avaliadores",
+    y = "Porcentagem de indicação analgésica"
+  ) +
+  theme_minimal()+theme(legend.position = 'none') +
+  scale_fill_manual(values = c("Alunos" = "skyblue", "Experientes" = "orange"))
+dev.off()
+
+
