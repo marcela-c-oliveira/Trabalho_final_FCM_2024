@@ -77,7 +77,7 @@ expected <- matrix(
 
 print(expected)
 
-# Como a tabela de valores esperados não apresentou nenhum número menor que 5, podemos usar o teste de qui quadrado, não é necessário/obrigatório usar fisher
+# Como a tabela de valores esperados n?o apresentou nenhum n?mero menor que 5, podemos usar o teste de qui quadrado, n?o ? necess?rio/obrigat?rio usar fisher
 
 # Chi square test OR Fisher test ####
 
@@ -90,22 +90,22 @@ fisher.test(table(df_c1$Categoria..Experient.ou.Student.,df_c1$Analgesia)) # p-v
 
 dfw$Timepoint <- factor(dfw$Timepoint, 
                         levels = c("0", "1"), 
-                        labels = c("Antes da castração", "Depois da castração"))
+                        labels = c("Antes da castra??o", "Depois da castra??o"))
 
 dfw$Categoria..Experient.ou.Student. <- factor(dfw$Categoria..Experient.ou.Student., 
                                                levels = c("Experient", "Student"), 
                                                labels = c("Experientes", "Alunos"))
 
 
-png("Boxplot_pontuações.png",width=12,height=5,units='in',res=400, 
+png("Boxplot_pontua??es.png",width=12,height=5,units='in',res=400, 
     family="sans")
 ggplot(dfw,aes(y=UPAPS,x=Categoria..Experient.ou.Student.,fill=Categoria..Experient.ou.Student.))+
   geom_boxplot(position=position_dodge(.1),outlier.shape = NA)+
-  stat_summary(fun=mean,geom="point",size=5,shape=23,color="black",fill = rgb(0, 0, 0, alpha = 0.3),position=position_dodge(0.1))+
+  stat_summary(fun=mean,geom="point",size=5,shape=23,color="red",fill = rgb(0, 0, 0, alpha = 0.3),position=position_dodge(0.1))+
   facet_wrap(~ Timepoint) +
-  labs(title = "Pontuação da dor em porcos antes e após castração",
+  labs(title = "Pontua??o da dor em porcos antes e ap?s castra??o",
        x = "Avaliadores",
-       y = "Pontuação da UPAPS")+
+       y = "Pontua??o da UPAPS")+
   scale_y_continuous(n.breaks=14, limits = c(-0.1, 15))+
   scale_fill_viridis_d()+
   theme_minimal()+theme(axis.text=element_text(size=10),
@@ -123,23 +123,25 @@ tabela_0 <- table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)
 tabela_1 <- table(df_c1$Categoria..Experient.ou.Student.,df_c1$Analgesia)
 
 prop <- data.frame(
-  Timepoint = c("Antes da castração", "Antes da castração", "Depois da castração", "Depois da castração"),
+  Timepoint = c("Antes da castra??o", "Antes da castra??o", "Depois da castra??o", "Depois da castra??o"),
   Categoria = c("Experientes", "Alunos", "Experientes", "Alunos"),
   Analgesia = c(0, 33, 82.5, 53)
 )
 
-png("Proporções.png",width=12,height=5,units='in',res=400, 
+png("Propor??es.png",width=12,height=5,units='in',res=400, 
     family="sans")
 ggplot(data = prop, aes(x = factor(Categoria), y = Analgesia, fill = Categoria)) +
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(~ Timepoint) +
   labs(
-    title = "Indicação analgésica em porcos antes e após castração",
+    title = "Indica??o analg?sica em porcos antes e ap?s castra??o",
     x = "Avaliadores",
-    y = "Porcentagem de indicação analgésica"
+    y = "Porcentagem de indica??o analg?sica"
   ) +
   theme_minimal()+theme(legend.position = 'none') +
-  scale_fill_manual(values = c("Alunos" = "skyblue", "Experientes" = "orange"))
+  scale_fill_manual(values = c("Alunos" = "red", "Experientes" = "green"))
 dev.off()
+
+
 
 
