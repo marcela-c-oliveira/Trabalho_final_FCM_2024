@@ -144,5 +144,8 @@ ggplot(data = prop, aes(x = factor(Categoria), y = Analgesia, fill = Categoria))
 dev.off()
 
 
+# c
+# C2
+#3
 
 
