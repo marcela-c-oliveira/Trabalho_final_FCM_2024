@@ -28,23 +28,6 @@ df <- df %>% arrange(Video)
 dfw=filter(df,Base=='Stelio')
 dfpw=filter(df,!Base=='Stelio')
 
-#dfexp=filter(dfw,!Categoria..Experient.ou.Student.=='Student')
-#dfstu=filter(dfw,!Categoria..Experient.ou.Student.=='Experient')
-#dfs1=filter(dfw,Observers=='S1')
-#dfs2=filter(dfw,Observers=='S2')
-#dfs3=filter(dfw,Observers=='S3')
-#dfs4=filter(dfw,Observers=='S4')
-#dfs5=filter(dfw,Observers=='S5')
-#dfs6=filter(dfw,Observers=='S6')
-#dfs7=filter(dfw,Observers=='S7')
-#dfs8=filter(dfw,Observers=='S8')
-#dfs9=filter(dfw,Observers=='S9')
-#dfs10=filter(dfw,Observers=='S10')
-#dfa1=filter(dfw,Observers=='A1')
-#dfa2=filter(dfw,Observers=='A2')
-#dfa3=filter(dfw,Observers=='A3')
-#dfgs=filter(dfw,Observers=='GS')
-
 dfw$Categoria..Experient.ou.Student.=as.factor(dfw$Categoria..Experient.ou.Student.)
 dfw$Analgesia=as.factor(dfw$Analgesia)
 dfw$Timepoint=as.factor(dfw$Timepoint)
@@ -56,21 +39,21 @@ df_c1=filter(dfw,Timepoint=='1')
 df_c0=filter(dfw,Timepoint=='0')
 
 
-# Matrix with expected values ####
+# Matrix with expected values - before castration ####
 
-df_c1$Analgesia <- factor(df_c1$Analgesia, 
-                        levels = c("0", "1"), 
-                        labels = c("No analgesia", "Analgesia"))
+df_c0$Analgesia <- factor(df_c0$Analgesia, 
+                          levels = c("0", "1"), 
+                          labels = c("No analgesia", "Analgesia"))
 
-table(df_c1$Categoria..Experient.ou.Student.,df_c1$Analgesia)
+table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)
 
-value11 <- (7 + 47) * (7 + 33) / 140
-value12 <- (33 + 53) * (7 + 33) / 140
-value21 <- (7 + 47) * (47 + 53) / 140
-value22 <- (33 + 53) * (47 + 53) / 140
+value11_c0 <- (40 + 67) * (40 + 0) / 140
+value12_c0 <- (33 + 0) * (40 + 0) / 140
+value21_c0 <- (40 + 67) * (67 + 33) / 140
+value22_c0 <- (33 + 0) * (67 + 33) / 140
 
-expected <- matrix(
-  round(c(value11, value12, value21, value22), 1), 
+expected_pre <- matrix(
+  round(c(value11_c0, value12_c0, value21_c0, value22_c0), 1), 
   nrow = 2, 
   byrow = TRUE,
   dimnames = list(
@@ -79,7 +62,41 @@ expected <- matrix(
   )
 )
 
-print(expected)
+print(expected_pre)
+
+# Como a tabela de valores esperados nao apresentou nenhum numero menor que 5, podemos usar o teste de qui quadrado, nao e necessario/obrigatorio usar fisher
+
+# Chi square test OR Fisher test - before castration ####
+
+chisq.test(table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)) # p-value = 8.304e-05
+
+fisher.test(table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)) # p-value = 3.563e-06
+
+
+# Matrix with expected values - after castration ####
+
+df_c1$Analgesia <- factor(df_c1$Analgesia, 
+                        levels = c("0", "1"), 
+                        labels = c("No analgesia", "Analgesia"))
+
+table(df_c1$Categoria..Experient.ou.Student.,df_c1$Analgesia)
+
+value11_c1 <- (7 + 47) * (7 + 33) / 140
+value12_c1 <- (33 + 53) * (7 + 33) / 140
+value21_c1 <- (7 + 47) * (47 + 53) / 140
+value22_c1 <- (33 + 53) * (47 + 53) / 140
+
+expected_post <- matrix(
+  round(c(value11_c1, value12_c1, value21_c1, value22_c1), 1), 
+  nrow = 2, 
+  byrow = TRUE,
+  dimnames = list(
+    c("Experients", "Students"), 
+    c("No analgesia", "Analgesia")
+  )
+)
+
+print(expected_post)
 
 # Como a tabela de valores esperados nao apresentou nenhum numero menor que 5, podemos usar o teste de qui quadrado, nao e necessario/obrigatorio usar fisher
 
@@ -106,13 +123,13 @@ png("Boxplot_pontuacoes.png",width=8.3,height=5.5,units='in',res=400,
 ggplot(dfw,aes(y=UPAPS,x=Categoria..Experient.ou.Student.,fill=Categoria..Experient.ou.Student.))+
   geom_boxplot(position=position_dodge(.1),outlier.shape = NA)+
   geom_point(position=position_jitter(width=.15,height=.2),size=2.5,shape=16,alpha=0.7,color="gray10")+
-  stat_summary(fun=mean,geom="point",size=7,shape=23,color="black",fill = rgb(0, 0, 0, alpha = 0.4),position=position_dodge(0.1))+
+  stat_summary(fun=mean,geom="point",size=7,shape=23,color="green",fill = rgb(0, 0, 0, alpha = 0.4),position=position_dodge(0.1))+
   geom_hline(linetype="dashed",yintercept=4, color="gray20", linewidth=0.8)+
   facet_wrap(~Timepoint) +
   labs(title = "Pontuação da dor em porcos antes e após castração",
        x = "Avaliadores",
        y = "Pontuação da UPAPS")+
-  scale_y_continuous(n.breaks=14, limits = c(-0.1, 15))+
+  scale_y_continuous(n.breaks=14, limits = c(0, 15))+
   scale_fill_manual(values = c("Experientes" = "orange2", "Alunos" = "steelblue4"))+
   theme_minimal()+theme(axis.text=element_text(size=15),
                         axis.title=element_text(size=19,face="bold"),
@@ -159,35 +176,3 @@ ggplot(data = prop, aes(x = factor(Categoria), y = Analgesia, fill = Categoria))
 dev.off()
 
 
-# Matrix with expected values - before castration ####
-
-df_c0$Analgesia <- factor(df_c0$Analgesia, 
-                          levels = c("0", "1"), 
-                          labels = c("No analgesia", "Analgesia"))
-
-table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)
-
-value11 <- (40 + 67) * (40 + 0) / 140
-value12 <- (33 + 0) * (40 + 0) / 140
-value21 <- (40 + 67) * (67 + 33) / 140
-value22 <- (33 + 0) * (67 + 33) / 140
-
-expected <- matrix(
-  round(c(value11, value12, value21, value22), 1), 
-  nrow = 2, 
-  byrow = TRUE,
-  dimnames = list(
-    c("Experients", "Students"), 
-    c("No analgesia", "Analgesia")
-  )
-)
-
-print(expected)
-
-# Como a tabela de valores esperados nao apresentou nenhum numero menor que 5, podemos usar o teste de qui quadrado, nao e necessario/obrigatorio usar fisher
-
-# Chi square test OR Fisher test - before castration ####
-
-chisq.test(table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)) # p-value = 0.002309
-
-fisher.test(table(df_c0$Categoria..Experient.ou.Student.,df_c0$Analgesia)) # p-value = 0.001101
